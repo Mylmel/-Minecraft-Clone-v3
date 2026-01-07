@@ -2445,6 +2445,8 @@ const btnExit = document.getElementById('btn-exit')!;
 const btnSettingsMain = document.getElementById('btn-settings-main')!;
 const btnSettingsPause = document.getElementById('btn-settings-pause')!;
 const btnBackSettings = document.getElementById('btn-back-settings')!;
+const btnModList = document.getElementById('btn-mod-list')!;
+const btnModEditor = document.getElementById('btn-mod-editor')!;
 const cbShadows = document.getElementById('cb-shadows') as HTMLInputElement;
 const cbClouds = document.getElementById('cb-clouds') as HTMLInputElement;
 
@@ -2590,6 +2592,27 @@ btnResume.addEventListener('click', () => hidePauseMenu());
 btnSettingsMain.addEventListener('click', () => showSettingsMenu(mainMenu));
 btnSettingsPause.addEventListener('click', () => showSettingsMenu(pauseMenu));
 btnBackSettings.addEventListener('click', () => hideSettingsMenu());
+
+// Mod buttons listeners
+btnModList.addEventListener('click', () => {
+    console.log("Opening mod list...");
+    // Hide pause menu
+    pauseMenu.style.display = 'none';
+    // Show mod list UI
+    import('./mod-editor/ModList').then(module => {
+        module.showModList();
+    });
+});
+
+btnModEditor.addEventListener('click', () => {
+    console.log("Opening mod editor...");
+    // Hide pause menu
+    pauseMenu.style.display = 'none';
+    // Open the mod editor UI
+    import('./mod-editor').then(module => {
+        module.openModEditor();
+    });
+});
 
 btnExit.addEventListener('click', async () => {
     // Save
