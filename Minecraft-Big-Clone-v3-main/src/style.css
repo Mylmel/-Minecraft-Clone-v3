@@ -550,3 +550,69 @@ canvas {
   font-size: 16px;
   outline: none;
 }
+
+
+/* Mod List UI Styles */
+#mod-list-container {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 600px;
+    max-height: 80vh;
+    overflow-y: auto;
+    background-color: rgba(0, 0, 0, 0.9);
+    color: white;
+    padding: 20px;
+    border-radius: 10px;
+    z-index: 1001;
+    font-family: Arial, sans-serif;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+}
+
+#mod-list-container h2 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.mod-list-item {
+    padding: 10px;
+    margin: 5px 0;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.mod-list-item .mod-info {
+    flex-grow: 1;
+}
+
+.mod-list-item .mod-actions {
+    margin-left: 10px;
+}
+
+.mod-action-btn {
+    background: #cc3333;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-left: 5px;
+}
+
+.mod-action-btn:hover {
+    background: #ff4444;
+}
+
+#close-mod-list {
+    background: #cc3333;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+}
