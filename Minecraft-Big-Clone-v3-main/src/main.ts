@@ -11,6 +11,9 @@ import { MobManager } from './MobManager';
 import { PlayerHand } from './PlayerHand';
 import './style.css';
 
+// Import mod editor
+import { initializeModEditor } from './mod-editor';
+
 // Tool Textures Registry
 const TOOL_TEXTURES: Record<number, GeneratedTexture> = {};
 
@@ -2611,6 +2614,9 @@ setInterval(() => {
 
 // Start Animation Loop immediately, but it will respect isPaused
 animate();
+
+// Initialize mod editor
+initializeModEditor();
 
 // Initial State
 showMainMenu();
