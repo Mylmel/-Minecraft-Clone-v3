@@ -2,12 +2,12 @@
  * Главный файл для интеграции редактора модов в игру
  */
 
-import { modEditor, openModEditor } from './ModEditor';
+import { modEditor } from './ModEditor';
 import { modManager } from './ModManager';
 import { Mod } from './Mod';
 
 // Экспортируем основные компоненты для использования в других частях игры
-export { modEditor, modManager, Mod, openModEditor };
+export { modEditor, modManager, Mod };
 
 // Функция для инициализации редактора модов
 export function initializeModEditor(): void {
