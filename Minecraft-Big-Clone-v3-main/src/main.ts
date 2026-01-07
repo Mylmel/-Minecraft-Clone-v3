@@ -13,6 +13,7 @@ import './style.css';
 
 // Import mod editor
 import { initializeModEditor } from './mod-editor';
+import { modManager } from './mod-editor/ModManager';
 
 // Tool Textures Registry
 const TOOL_TEXTURES: Record<number, GeneratedTexture> = {};
@@ -2442,6 +2443,10 @@ const btnContinue = document.getElementById('btn-continue')!;
 const btnResume = document.getElementById('btn-resume')!;
 const btnExit = document.getElementById('btn-exit')!;
 
+const btnModList = document.getElementById('btn-mod-list')!;
+const btnModRedactor = document.getElementById('btn-mod-redactor')!;
+const btnModListPause = document.getElementById('btn-mod-list-pause')!;
+const btnModRedactorPause = document.getElementById('btn-mod-redactor-pause')!;
 const btnSettingsMain = document.getElementById('btn-settings-main')!;
 const btnSettingsPause = document.getElementById('btn-settings-pause')!;
 const btnBackSettings = document.getElementById('btn-back-settings')!;
@@ -2482,6 +2487,105 @@ function hideSettingsMenu() {
     } else {
         showMainMenu(); // Fallback
     }
+}
+
+// Function to show the mod list UI
+function showModListUI() {
+    // Create or show the mod list container
+    let modListContainer = document.getElementById('mod-list-container');
+    
+    if (!modListContainer) {
+        // Create the mod list UI container
+        modListContainer = document.createElement('div');
+        modListContainer.id = 'mod-list-container';
+        modListContainer.style.position = 'fixed';
+        modListContainer.style.top = '50%';
+        modListContainer.style.left = '50%';
+        modListContainer.style.transform = 'translate(-50%, -50%)';
+        modListContainer.style.width = '600px';
+        modListContainer.style.maxHeight = '80vh';
+        modListContainer.style.overflowY = 'auto';
+        modListContainer.style.backgroundColor = 'rgba(0, 0, 0, 0.9)';
+        modListContainer.style.color = 'white';
+        modListContainer.style.padding = '20px';
+        modListContainer.style.borderRadius = '10px';
+        modListContainer.style.zIndex = '1001';
+        modListContainer.style.fontFamily = 'Arial, sans-serif';
+        modListContainer.style.boxShadow = '0 0 20px rgba(0, 0, 0, 0.5)';
+        
+        modListContainer.innerHTML = `
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                <h2>Список модов</h2>
+                <button id="close-mod-list" class="minecraft-btn" style="width: auto; height: auto; padding: 5px 10px;">Закрыть</button>
+            </div>
+            <div id="mod-list-content">
+                <p>Загрузка модов...</p>
+            </div>
+        `;
+        
+        document.body.appendChild(modListContainer);
+        
+        // Add close button event listener
+        document.getElementById('close-mod-list')?.addEventListener('click', () => {
+            modListContainer!.style.display = 'none';
+        });
+    }
+    
+    // Update the mod list content
+    updateModListContent();
+    
+    // Show the mod list container
+    modListContainer.style.display = 'block';
+}
+
+// Function to update the mod list content
+function updateModListContent() {
+    const modListContent = document.getElementById('mod-list-content');
+    if (!modListContent) return;
+    
+    // Get all loaded mods from the mod manager
+    const allMods = (window as any).modManager?.getAllMods() || [];
+    
+    if (allMods.length === 0) {
+        modListContent.innerHTML = '<p>Нет установленных модов</p>';
+        return;
+    }
+    
+    let modListHTML = '<ul style="list-style: none; padding: 0;">';
+    
+    for (const mod of allMods) {
+        modListHTML += `
+            <li class="mod-list-item">
+                <div class="mod-info">
+                    <strong>${mod.name}</strong><br>
+                    <small>ID: ${mod.id}, Версия: ${mod.version}, Автор: ${mod.author}</small><br>
+                    <small>Описание: ${mod.description}</small>
+                </div>
+                <div class="mod-actions">
+                    <button class="mod-action-btn minecraft-btn" data-mod-id="${mod.id}" data-action="unload" style="width: auto; height: auto; padding: 5px 10px; margin-left: 5px;">Удалить</button>
+                </div>
+            </li>
+        `;
+    }
+    
+    modListHTML += '</ul>';
+    modListContent.innerHTML = modListHTML;
+    
+    // Add event listeners to the action buttons
+    document.querySelectorAll('.mod-action-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            const modId = this.getAttribute('data-mod-id');
+            const action = this.getAttribute('data-action');
+            
+            if (action === 'unload' && modId) {
+                if ((window as any).modManager) {
+                    (window as any).modManager.unloadMod(modId);
+                    updateModListContent(); // Refresh the list
+                    showHotbarLabel(`Мод ${modId} удален`);
+                }
+            }
+        });
+    });
 }
 
 function hidePauseMenu() {
@@ -2587,6 +2691,21 @@ btnNewGame.addEventListener('click', () => startGame(false));
 btnContinue.addEventListener('click', () => startGame(true));
 btnResume.addEventListener('click', () => hidePauseMenu());
 
+btnModList.addEventListener('click', () => {
+    // Show mod list UI - create or show the mod list
+    showModListUI();
+});
+btnModRedactor.addEventListener('click', () => {
+    // Show mod editor UI
+    const modUI = document.getElementById('mod-editor-ui');
+    const toggleButton = document.getElementById('toggle-mod-editor');
+    
+    if (modUI) {
+        modUI.style.display = 'block';
+        if (toggleButton) (toggleButton as HTMLButtonElement).textContent = 'Скрыть';
+    }
+});
+
 btnSettingsMain.addEventListener('click', () => showSettingsMenu(mainMenu));
 btnSettingsPause.addEventListener('click', () => showSettingsMenu(pauseMenu));
 btnBackSettings.addEventListener('click', () => hideSettingsMenu());
@@ -2617,6 +2736,9 @@ animate();
 
 // Initialize mod editor
 initializeModEditor();
+
+// Expose mod manager globally so UI can access it
+(window as any).modManager = modManager;
 
 // Initial State
 showMainMenu();
