@@ -479,20 +479,3 @@ export class ModEditor {
 
 // Глобальный экземпляр редактора модов
 export const modEditor = new ModEditor();
-
-/**
- * Открывает UI редактора модов
- */
-export function openModEditor(): void {
-  modEditor.initializeUI();
-  
-  // Показываем UI редактора модов
-  const modContainer = document.getElementById('mod-editor-ui') as HTMLDivElement;
-  if (modContainer) {
-    modContainer.style.display = 'block';
-    const toggleButton = document.getElementById('toggle-mod-editor') as HTMLButtonElement;
-    if (toggleButton) {
-      toggleButton.textContent = 'Скрыть';
-    }
-  }
-}
